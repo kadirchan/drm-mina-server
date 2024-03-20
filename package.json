@@ -1,0 +1,20 @@
+{
+    "type": "module",
+    "scripts": {
+        "build": "esbuild src/*.ts --outdir=build",
+        "start": "npm run build && node build/server.js"
+    },
+    "author": "kadirchan",
+    "dependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "cors": "^2.8.5",
+        "express": "^4.19.0",
+        "o1js": "^0.16.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.30",
+        "esbuild": "^0.19.9",
+        "typescript": "^5.3.3"
+    }
+}
