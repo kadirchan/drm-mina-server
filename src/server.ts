@@ -15,6 +15,7 @@ const db = new Database();
 const port = 8080;
 
 app.use(cors());
+app.use(express.json());
 app.use(serveStatic("public"));
 
 app.get("/game-data", (req, res) => {
@@ -25,14 +26,16 @@ app.get("/game-data", (req, res) => {
 
 app.post("/wishlist/:publicKey", async (req, res) => {
     const { publicKey } = req.params;
-    const { game } = req.body;
+    const { gameId } = req.body;
 
     try {
-        const user = await User.findOneAndUpdate(
-            { publicKey },
-            { $push: { wishlistedGames: game } },
-            { new: true, upsert: true }
-        );
+        // const user = await User.findOneAndUpdate(
+        //     { publicKey },
+        //     { $push: { wishlistedGames: game } },
+        //     { new: true, upsert: true }
+        // );
+        const user = publicKey;
+        console.log("Adding game to wishlist", user, gameId);
         res.json(user);
     } catch (err) {
         console.error(err);
@@ -44,31 +47,14 @@ app.get("/wishlist/:publicKey", async (req, res) => {
     const { publicKey } = req.params;
 
     try {
-        const user = await User.findOne({ publicKey });
-        res.json(user?.wishlistedGames || []);
+        // const user = await User.findOne({ publicKey });
+        // res.json(user?.wishlistedGames || []);
+        const user = publicKey;
+        console.log("Retrieving wishlist", user);
+        res.json([]);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error retrieving wishlist");
-    }
-});
-
-app.delete("/wishlist/:publicKey", async (req, res) => {
-    const { publicKey } = req.params;
-    const { gameId } = req.body;
-
-    try {
-        const user = await User.findOne({ publicKey });
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-
-        user.wishlistedGames.pull({ gameId });
-        await user.save();
-
-        res.json(user.wishlistedGames);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error removing game from wishlist");
     }
 });
 
