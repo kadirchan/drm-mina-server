@@ -10,8 +10,10 @@
         "@types/cors": "^2.8.17",
         "@types/express": "^4.17.21",
         "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
         "express": "^4.19.0",
-        "mongoose": "^8.2.3",
+        "mongodb": "^6.5.0",
+        "mongoose": "^8.2.4",
         "o1js": "^0.16.2"
     },
     "devDependencies": {

@@ -9,7 +9,7 @@ const games = [
         creator: "Eren Kardas",
         cover: "images/barbarian.webp",
         price: 20,
-        discount: 0,
+        discount: 5,
         rating: 4.5,
         releaseDate: "2021-09-15",
         tags: ["Action", "Adventure", "RPG"],
@@ -35,7 +35,7 @@ const games = [
         creator: "Cyborg Games",
         cover: "images/cyberpunk.webp",
         price: 60,
-        discount: 0,
+        discount: 20,
         rating: 4.5,
         releaseDate: "2021-09-15",
         tags: ["Action", "Adventure", "RPG"],
@@ -48,7 +48,7 @@ const games = [
         creator: "Ponchik Games",
         cover: "images/doll-house.webp",
         price: 30,
-        discount: 0,
+        discount: 10,
         rating: 4.5,
         releaseDate: "2021-09-15",
         tags: ["Action", "Adventure", "RPG"],
@@ -74,7 +74,7 @@ const games = [
         creator: "Soul Games",
         cover: "images/soul-hunting.webp",
         price: 50,
-        discount: 0,
+        discount: 30,
         rating: 4.5,
         releaseDate: "2021-09-15",
         tags: ["Action", "Adventure", "RPG"],
@@ -121,6 +121,7 @@ const games = [
 ];
 
 export interface Game {
+    id: number;
     name: string;
     creator: string;
     cover: string;
