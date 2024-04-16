@@ -3,9 +3,12 @@ import serveStatic from "serve-static";
 import cors from "cors";
 import Database from "./database.js";
 import mongoose from "mongoose";
-import { Game, User } from "./schemas.js";
+import { Game, TreeModel, User } from "./schemas.js";
 import dotenv from "dotenv";
 import { MINA_ADDRESS_REGEX } from "./utils.js";
+import { MerkleMap } from "./lib/merkleMap.js";
+import { Field, Poseidon, PrivateKey } from "o1js";
+import { MerkleTree } from "./lib/merkleTree.js";
 
 dotenv.config();
 
@@ -19,6 +22,53 @@ mongoDb.on("error", (err) => {
 mongoDb.once("open", function () {
     console.log("Connected successfully to MongoDB");
 });
+
+const publicKey = PrivateKey.random().toPublicKey();
+await (async () => {
+    const map = new MerkleMap();
+    map.set(Poseidon.hash(publicKey.toFields()), Field(31));
+    console.log("Merkle Root", map.getRoot().toString());
+    console.log("Leaf", map.get(Poseidon.hash(publicKey.toFields())).toString());
+
+    const map2 = new MerkleMap();
+    map2.tree = MerkleTree.fromJSON(map.tree.toJSON());
+    console.log("Merkle Root", map2.getRoot().toString());
+    console.log("Leaf", map2.get(Poseidon.hash(publicKey.toFields())).toString());
+
+    const treeJson = map.tree.toJSON() as {
+        height: number;
+        nodes: { [key: string]: string };
+        name?: string;
+    };
+    treeJson.name = "merkleMap";
+
+    await TreeModel.replaceOne(
+        { name: "merkleMap" }, // Filter
+        treeJson, // Replacement document
+        { upsert: true } // Options
+    );
+})();
+
+await (async () => {
+    const tree = await TreeModel.findOne({ name: "merkleMap" });
+    if (tree) {
+        const treeObject = tree.toObject();
+        // @ts-ignore
+        delete treeObject._id;
+        delete treeObject.name;
+        const treeJson = treeObject as {
+            height: number;
+            nodes: { [key: string]: string };
+        };
+        const map = new MerkleMap();
+        map.tree = MerkleTree.fromJSON(treeJson);
+
+        console.log("Merkle Root", map.getRoot().toString());
+        console.log("Leaf", map.get(Poseidon.hash(publicKey.toFields())).toString());
+    } else {
+        console.log("No tree found with that name");
+    }
+})();
 
 const app = express();
 const db = new Database();

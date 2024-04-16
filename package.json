@@ -1,7 +1,7 @@
 {
     "type": "module",
     "scripts": {
-        "build": "esbuild src/*.ts --outdir=build",
+        "build": "esbuild src/*.ts src/lib/*.ts --outdir=build",
         "start": "npm run build && node build/server.js",
         "pm2": "npm run build && pm2 start build/server.js"
     },
